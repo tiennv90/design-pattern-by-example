@@ -2,7 +2,11 @@ package com.tiennv.observer;
 
 import java.util.Observable;
 import java.util.Observer;
-
+/**
+ * 
+ * @author tien nguyen
+ * This class implement  java.util.Observer so it can be added to Observable
+ */
 public class SubscribersDisplay implements DisplayElement, Observer {
 
 	private String content;
