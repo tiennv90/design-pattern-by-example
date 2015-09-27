@@ -1,5 +1,7 @@
 package com.tiennv.composite;
 
+import com.tiennv.visitor.Visitor;
+
 public class CompositeNegateNode extends CompositeUnaryNode {
 
 	public CompositeNegateNode(ComponentNode right) {
@@ -12,7 +14,7 @@ public class CompositeNegateNode extends CompositeUnaryNode {
 	}
 	
 	@Override
-	public void accept() {
-		super.accept();
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 }

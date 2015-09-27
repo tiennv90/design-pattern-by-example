@@ -1,5 +1,7 @@
 package com.tiennv.composite;
 
+import com.tiennv.visitor.Visitor;
+
 public abstract class ComponentNode {
 
 	public int item() {
@@ -15,7 +17,7 @@ public abstract class ComponentNode {
 		return null;
 	}
 
-	public void accept() {
+	public void accept(Visitor visitor) {
 		throw new UnsupportedOperationException(
 				"ComponentNode::accept called improperly");
 	}

@@ -1,5 +1,7 @@
 package com.tiennv.composite;
 
+import com.tiennv.visitor.Visitor;
+
 public class CompositeMutiplyNode extends CompositeBinaryNode {
 	
 	public CompositeMutiplyNode(ComponentNode right, ComponentNode left) {
@@ -12,8 +14,8 @@ public class CompositeMutiplyNode extends CompositeBinaryNode {
 	}
 
 	@Override
-	public void accept() {
-		super.accept();
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 	
 }

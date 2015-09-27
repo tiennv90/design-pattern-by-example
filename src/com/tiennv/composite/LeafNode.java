@@ -1,5 +1,7 @@
 package com.tiennv.composite;
 
+import com.tiennv.visitor.Visitor;
+
 public class LeafNode extends ComponentNode {
 	private int item;
 	
@@ -12,8 +14,7 @@ public class LeafNode extends ComponentNode {
 		return item;
 	}
 	
-	@Override
-	public void accept() {
-		//will improve in future
-	}
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
+    }
 }
