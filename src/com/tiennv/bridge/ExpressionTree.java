@@ -11,7 +11,28 @@ public class ExpressionTree {
 		this.root = root;
 	}
 	
+	public boolean isNull() {
+		return (root == null);
+	}
+	
+	public ComponentNode getRoot() {
+		return root;
+	}
+	
+	public ExpressionTree left() {
+		return new ExpressionTree(root.left());
+	}
+	
+	public ExpressionTree right() {
+		return new ExpressionTree(root.right());
+	}
+	
+	public int item() throws Exception {
+		return root.item();
+	}
+	
 	public void accept(Visitor visitor) {
 		root.accept(visitor);
 	}
+	
 }
