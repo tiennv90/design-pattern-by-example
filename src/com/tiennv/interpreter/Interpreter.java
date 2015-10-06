@@ -3,7 +3,9 @@ package com.tiennv.interpreter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Stack;
 
+import com.tiennv.bridge.ExpressionTree;
 import com.tiennv.factorymethod.ExpressionTreeFactory;
 
 /**
@@ -85,6 +87,37 @@ public class Interpreter {
 	
 	public Interpreter(ExpressionTreeFactory expressionTreeFactory) {
 		this.expressionTreeFactory = expressionTreeFactory;
+	}
+	
+    /**
+     * This method first converts a string into a parse tree and then
+     * build an expression tree out of the parse tree.  It's
+     * implemented using the Template Method pattern.
+     */
+	ExpressionTree interpret(String inputExpression) {
+		Stack<Symbol> parseTree = buildParseTree(inputExpression);
+		if (!parseTree.isEmpty()) {
+			
+			optimizeParseTree(parseTree);
+			
+			return buldExpressionTree(parseTree);
+		}
+			
+		return expressionTreeFactory.makeExpressionTree(null); 
+		
+	}
+	
+	public ExpressionTree buldExpressionTree(Stack<Symbol> parseTree) {
+		return null;
+	}
+
+	private void optimizeParseTree(Stack<Symbol> parseTree) {
+		
+	}
+
+	public Stack<Symbol> buildParseTree(String inputExpression) {
+		
+		return null;
 	}
 	
 	abstract class Symbol {
