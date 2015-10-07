@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Stack;
 
 import com.tiennv.bridge.ExpressionTree;
+import com.tiennv.composite.ComponentNode;
 import com.tiennv.factorymethod.ExpressionTreeFactory;
 
 /**
@@ -100,27 +101,71 @@ public class Interpreter {
 			
 			optimizeParseTree(parseTree);
 			
-			return buldExpressionTree(parseTree);
+			return buildExpressionTree(parseTree);
 		}
 			
 		return expressionTreeFactory.makeExpressionTree(null); 
 		
 	}
 	
-	public ExpressionTree buldExpressionTree(Stack<Symbol> parseTree) {
-		return null;
+    /** 
+     * Invoke a recursive build of the ExpressionTree, starting with
+     * the root symbol, which should be the one and only item in the
+     * linked list.  The Builder pattern is used at each node to
+     * create the appropriate subclass of @a ComponentNode.
+     */
+	public ExpressionTree buildExpressionTree(Stack<Symbol> parseTree) {
+		return expressionTreeFactory.makeExpressionTree(parseTree.peek().build());
 	}
 
+    /**
+     * This hook method can be overridden to conduct optimization on
+     * the @a parseTree prior to generating the @a ExpressionTree.  By
+     * default it's a no-op.
+     */
 	private void optimizeParseTree(Stack<Symbol> parseTree) {
 		
 	}
 
 	public Stack<Symbol> buildParseTree(String inputExpression) {
+		Stack<Symbol> parseTree = new Stack<>();
 		
+		lastValidInput = null;
+		boolean handled = false;
+		accumulatedPrecedence = 0;
+		multiDigitNumbers = 0;
+		
+		for (int index = 0; index < inputExpression.length(); ++index) {
+			parseTree = parseNextSymbol(inputExpression, index, handled, parseTree);
+		}
 		return null;
 	}
 	
+	private Stack<Symbol> parseNextSymbol(String inputExpression, int index, boolean handled, Stack<Symbol> parseTree) {
+		handled = false;
+		if (Character.isDigit(inputExpression.charAt(index))) {
+			handled = true;
+			parseTree = insertNumberOrVariable(inputExpression, index, parseTree, false);
+		} else if (Character.isLetterOrDigit(inputExpression.charAt(index))) {
+			handled = true;
+			parseTree = insertNumberOrVariable(inputExpression, index, parseTree, true);
+		} else if (inputExpression.charAt(index) == '+') {
+			handled = true;
+			//to do
+		}
+		return null;
+	}
+
+	private Stack<Symbol> insertNumberOrVariable(String inputExpression, int index, Stack<Symbol> parseTree,
+			boolean b) {
+		return null;
+	}
+
 	abstract class Symbol {
+
+		public ComponentNode build() {
+			return null;
+		}
 		
 	}
 }
