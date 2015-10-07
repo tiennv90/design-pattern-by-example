@@ -4,8 +4,8 @@ import com.tiennv.visitor.Visitor;
 
 public class CompositeDivideNode extends CompositeBinaryNode {
 	
-	public CompositeDivideNode(ComponentNode right, ComponentNode left) {
-		super(right, left);
+	public CompositeDivideNode(ComponentNode left, ComponentNode right) {
+		super(left, right);
 	}
 
 	@Override

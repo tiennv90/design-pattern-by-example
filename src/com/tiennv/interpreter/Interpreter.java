@@ -7,6 +7,12 @@ import java.util.Stack;
 
 import com.tiennv.bridge.ExpressionTree;
 import com.tiennv.composite.ComponentNode;
+import com.tiennv.composite.CompositeAddNode;
+import com.tiennv.composite.CompositeDivideNode;
+import com.tiennv.composite.CompositeMutiplyNode;
+import com.tiennv.composite.CompositeNegateNode;
+import com.tiennv.composite.CompositeSubtractNode;
+import com.tiennv.composite.LeafNode;
 import com.tiennv.factorymethod.ExpressionTreeFactory;
 
 /**
@@ -151,8 +157,38 @@ public class Interpreter {
 			parseTree = insertNumberOrVariable(inputExpression, index, parseTree, true);
 		} else if (inputExpression.charAt(index) == '+') {
 			handled = true;
-			//to do
+			Add op = new Add();
+			op.addPrecedence(accumulatedPrecedence);
+			lastValidInput = null;
+			
+			parseTree = insertSymbolByPrecedence(op, parseTree);
+		} else if (inputExpression.charAt(index) == '-') {
+			handled = true;
+			Symbol op = null;
+			Number number = null;
+			if (lastValidInput == null) {
+				op = new Negate();
+				op.addPrecedence(accumulatedPrecedence);
+			} else {
+				op = new Subtract();
+				op.addPrecedence(accumulatedPrecedence);
+			}
+			lastValidInput = null;
+			parseTree = insertSymbolByPrecedence(op, parseTree);
+		} else if (inputExpression.charAt(index) == '/') {
+			
+		} else if (inputExpression.charAt(index) == '*') {
+			
+		} else if (inputExpression.charAt(index) == '(') {
+			
+		} else if (inputExpression.charAt(index) == ' ' || inputExpression.charAt(index) == '\n') {
+			handled = true;
 		}
+		return parseTree;
+	}
+
+	private Stack<Symbol> insertSymbolByPrecedence(Symbol op,
+			Stack<Symbol> parseTree) {
 		return null;
 	}
 
@@ -161,11 +197,205 @@ public class Interpreter {
 		return null;
 	}
 
+    /**
+     * @class Symbol
+     *
+     * @brief Base class for the various parse tree subclasses.
+     */
 	abstract class Symbol {
 
-		public ComponentNode build() {
-			return null;
+		protected int precedence = 0;
+		
+		protected Symbol left;
+		
+		protected Symbol right;
+		
+		public Symbol(Symbol left, Symbol right, int precedence) {
+			this.left = left;
+			this.right = right;
+			this.precedence = precedence;
+		}
+		
+		public int precedence() {
+			return precedence;
+		}
+		
+		public abstract int addPrecedence(int accumulatedPrecedence);
+		
+		abstract ComponentNode build();
+		
+	}
+	
+	class Number extends Symbol {
+
+		private int item;
+		
+		public Number(String input) {
+			super(null, null, NUMBER_PRECEDENCE);
+			item = Integer.parseInt(input);
+		}
+		
+		public Number(int input) {
+			super(null, null, NUMBER_PRECEDENCE);
+			item = input;
+		}
+		
+		@Override
+		public int addPrecedence(int accumulatedPrecedence) {
+			return precedence = NUMBER_PRECEDENCE + accumulatedPrecedence;
+		}
+		
+		@Override
+		public int precedence() {
+			return precedence;
+		}
+
+		@Override
+		ComponentNode build() {
+			return new LeafNode(item);
+		}
+	}
+	
+    /**
+     * @class Operator
+     *
+     * @brief Defines a base class in the parse tree for operator
+     *        non-terminal expressions.
+     */
+	public abstract class Operator extends Symbol {
+		public Operator(Symbol left, Symbol right, int precedence) {
+			super(left, right, precedence);
+		}
+	}
+	
+	public abstract class UnaryOperator extends Symbol {
+		public UnaryOperator(Symbol right, int precedence) {
+			super(right, right, precedence);
+		}
+		
+		abstract ComponentNode build();
+	}
+	
+    /**
+     * @class Negate
+     *
+     * @brief Defines a node in the parse tree for unary minus
+     *        operator non-terminal expression.
+     */
+	class Negate extends UnaryOperator {
+
+		public Negate() {
+			super(null, NEGATE_PRECEDENCE);
+		}
+
+		@Override
+		ComponentNode build() {
+			return new CompositeNegateNode(right.build());
+		}
+
+		@Override
+		public int addPrecedence(int accumulatedPrecedence) {
+			return precedence = NEGATE_PRECEDENCE + accumulatedPrecedence;
+		}
+		
+		@Override
+		public int precedence() {
+			return precedence;
+		}
+	}
+	
+	class Add extends Operator {
+
+		public Add() {
+			super(null, null, ADD_SUB_PRECEDENCE);
+		}
+
+		@Override
+		public int addPrecedence(int accumulatedPrecedence) {
+			return precedence = ADD_SUB_PRECEDENCE + accumulatedPrecedence;
+		}
+
+		@Override
+		public int precedence() {
+			return precedence;
+		}
+		
+		@Override
+		ComponentNode build() {
+			return new CompositeAddNode(left.build(), right.build());
 		}
 		
 	}
+	
+	class Subtract extends Operator {
+
+		public Subtract() {
+			super(null, null, ADD_SUB_PRECEDENCE);
+		}
+
+		@Override
+		public int addPrecedence(int accumulatedPrecedence) {
+			return precedence = ADD_SUB_PRECEDENCE + accumulatedPrecedence;
+		}
+
+		@Override
+		public int precedence() {
+			return precedence;
+		}
+		
+		@Override
+		ComponentNode build() {
+			return new CompositeSubtractNode(left.build(), right.build());
+		}
+	}
+	
+	class Multiply extends Operator {
+		
+		public Multiply() {
+			super(null, null, MUL_DIV_PRECEDENCE);
+		}
+
+		@Override
+		public int addPrecedence(int accumulatedPrecedence) {
+			return precedence = MUL_DIV_PRECEDENCE + accumulatedPrecedence;
+		}
+
+		@Override
+		ComponentNode build() {
+			return new CompositeMutiplyNode(left.build(), right.build());
+		}
+		
+		@Override
+		public int precedence() {
+			return precedence;
+		}
+	}
+	
+	class Divide extends Operator {
+		
+        public Divide() {
+            super(null, null, MUL_DIV_PRECEDENCE);
+        }
+
+        /** Returns the current precedence. */
+        public int precedence() {
+            return precedence;
+        }
+
+        /** Adds precedence to its current value. */
+        @Override
+        public int addPrecedence(int accumulatedPrecedence) {
+            return precedence = 
+                MUL_DIV_PRECEDENCE + accumulatedPrecedence;
+        }
+
+        ComponentNode build() {
+            return new CompositeDivideNode(left.build(),
+                                           right.build());
+        }
+
+
+	}
+	
+	
 }

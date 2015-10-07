@@ -4,8 +4,8 @@ import com.tiennv.visitor.Visitor;
 
 public class CompositeMutiplyNode extends CompositeBinaryNode {
 	
-	public CompositeMutiplyNode(ComponentNode right, ComponentNode left) {
-		super(right, left);
+	public CompositeMutiplyNode(ComponentNode left, ComponentNode right) {
+		super(left, right);
 	}
 
 	@Override
