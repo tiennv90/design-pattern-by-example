@@ -148,24 +148,33 @@ public class Interpreter {
 	}
 	
 	private Stack<Symbol> parseNextSymbol(String inputExpression, int index, boolean handled, Stack<Symbol> parseTree) {
+		
 		handled = false;
+		
 		if (Character.isDigit(inputExpression.charAt(index))) {
+			
 			handled = true;
 			parseTree = insertNumberOrVariable(inputExpression, index, parseTree, false);
+			
 		} else if (Character.isLetterOrDigit(inputExpression.charAt(index))) {
+			
 			handled = true;
 			parseTree = insertNumberOrVariable(inputExpression, index, parseTree, true);
+			
 		} else if (inputExpression.charAt(index) == '+') {
+			
 			handled = true;
 			Add op = new Add();
 			op.addPrecedence(accumulatedPrecedence);
 			lastValidInput = null;
 			
 			parseTree = insertSymbolByPrecedence(op, parseTree);
+			
 		} else if (inputExpression.charAt(index) == '-') {
+			
 			handled = true;
 			Symbol op = null;
-			Number number = null;
+			
 			if (lastValidInput == null) {
 				op = new Negate();
 				op.addPrecedence(accumulatedPrecedence);
@@ -173,27 +182,60 @@ public class Interpreter {
 				op = new Subtract();
 				op.addPrecedence(accumulatedPrecedence);
 			}
+			
 			lastValidInput = null;
 			parseTree = insertSymbolByPrecedence(op, parseTree);
-		} else if (inputExpression.charAt(index) == '/') {
 			
 		} else if (inputExpression.charAt(index) == '*') {
 			
+			handled = true;
+			
+			Multiply op = new Multiply();
+			op.addPrecedence(accumulatedPrecedence);
+			
+			lastValidInput = null;
+			
+			parseTree = insertSymbolByPrecedence(op, parseTree);
+			
+		} else if (inputExpression.charAt(index) == '/') {
+			
+			handled = true;
+			Divide op = new Divide();
+			op.addPrecedence(accumulatedPrecedence);
+			
+			lastValidInput = null;
+			
+			parseTree = insertSymbolByPrecedence(op, parseTree);
+			
 		} else if (inputExpression.charAt(index) == '(') {
 			
-		} else if (inputExpression.charAt(index) == ' ' || inputExpression.charAt(index) == '\n') {
 			handled = true;
+			
+			parseTree = handleParentheses(inputExpression, index, handled, parseTree);
+			
+		} else if (inputExpression.charAt(index) == ' ' || inputExpression.charAt(index) == '\n') {
+			
+			handled = true;
+			
 		}
 		return parseTree;
 	}
 
+	private Stack<Symbol> handleParentheses(String inputExpression, int index,
+			boolean handled, Stack<Symbol> parseTree) {
+		//to do
+		return null;
+	}
+
 	private Stack<Symbol> insertSymbolByPrecedence(Symbol op,
 			Stack<Symbol> parseTree) {
+		//to do
 		return null;
 	}
 
 	private Stack<Symbol> insertNumberOrVariable(String inputExpression, int index, Stack<Symbol> parseTree,
 			boolean b) {
+		//to do
 		return null;
 	}
 
